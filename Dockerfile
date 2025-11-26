@@ -1,20 +1,29 @@
-# Usamos una imagen base ligera de Python
+# Imagen base ligera
 FROM python:3.10-slim
 
-# Establecemos el directorio de trabajo dentro del contenedor
+# Evitar preguntas y mejorar seguridad
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Establecemos directorio de trabajo
 WORKDIR /app
 
-# Copiamos solo el archivo de dependencias primero para aprovechar el cache de Docker
+# Instalamos dependencias de sistema si tu proyecto las necesita
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar solo requirements.txt para cache
 COPY requirements.txt .
 
-# Instalamos las dependencias
+# Instalar dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiamos el resto del código
+# Copiar el resto del proyecto
 COPY . .
 
-# El puerto que expone la aplicación Flask (coincide con app.py)
+# Exponer puerto Flask
 EXPOSE 1002
 
-# Comando por defecto para ejecutar la aplicación
+# Comando por defecto
 CMD ["python", "app.py"]

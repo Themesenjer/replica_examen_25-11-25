@@ -1,9 +1,10 @@
-from flask import Flask, jsonify, render_template_string
+from flask import Flask
 import random
 
 app = Flask(__name__)
 
-# Datos simulados de la Liga Pro
+VERSION = "reyes-1.0.5"
+
 tabla_posiciones = [
     {"pos": 1, "equipo": "Independiente del Valle", "puntos": 35, "pj": 15, "escudo": "🔵⚫"},
     {"pos": 2, "equipo": "LDU Quito", "puntos": 33, "pj": 15, "escudo": "⚪🔴"},
@@ -12,7 +13,6 @@ tabla_posiciones = [
     {"pos": 5, "equipo": "Aucas", "puntos": 26, "pj": 15, "escudo": "🟡🔴"}
 ]
 
-# Simulación de IA
 def predecir_campeon():
     candidatos = sorted(tabla_posiciones, key=lambda x: x['puntos'], reverse=True)[:3]
     ganador = random.choice(candidatos)
@@ -22,7 +22,7 @@ def predecir_campeon():
 @app.route('/')
 def home():
     equipo_ia, prob_ia = predecir_campeon()
-    
+
     html = f"""
     <!DOCTYPE html>
     <html lang="es">
@@ -50,7 +50,7 @@ def home():
             <div class="ia-box">
                 🤖 IA Predicción: <strong>{equipo_ia}</strong> ({prob_ia}%)
             </div>
-            <p><em>Versión: reyes-local-1.0.5</em></p>
+            <p><em>Versión: {VERSION}</em></p>
         </div>
     </body>
     </html>
