@@ -4,7 +4,7 @@ name: Replica Examen CI/CD
 on:
   push:
     branches:
-      - reyes
+      - reyes #es la rama donde se ejecutará la CI/CD
 
 permissions:
   contents: read
