@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: read
-  packages: write   # NECESARIO para publicar en GHCR
+  packages: write
 
 jobs:
   build-and-push:
@@ -17,25 +17,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
       - name: Normalize repo name (lowercase)
         run: echo "REPO_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
-      - name: Login to GitHub Container Registry
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Docker Image
+      - name: Build & Push Image
         uses: docker/build-push-action@v6
         with:
           context: .
