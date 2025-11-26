@@ -1,0 +1,46 @@
+# Este es el archivo de configuración de la CI/CD se agrega en el repositorio
+name: Replica Examen CI/CD
+
+on:
+  push:
+    branches:
+      - reyes
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          # Si tienes tests, descomenta la siguiente línea:
+          # pytest
+
+      - name: Lowercase Repo Name
+        run: echo "REPO_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ghcr.io/${{ env.REPO_NAME }}:reyes-1.0.5
+          context: .

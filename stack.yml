@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  reyes-app-local:
+    # IMAGEN: Usamos la imagen que se construye en el CI/CD.
+    # Formato: ghcr.io/<usuario>/<repositorio>:<etiqueta>
+    # Nota: Asegúrate de reemplazar 'themesenjer' con tu usuario real en minúsculas si es diferente.
+    image: ghcr.io/themesenjer/replica_examen_25:reyes-1.0.5
+    
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    
+    # Mapeo directo para Localhost
+    # Puerto 80 (Tu PC) -> Puerto 1002 (Contenedor)
+    # Esto significa que podrás acceder a tu aplicación en http://localhost
+    ports:
+      - "80:1002"
